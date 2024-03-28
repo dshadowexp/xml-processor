@@ -1,3 +1,3 @@
-export function xml_processor(a: boolean, b: number) {
-    
-}
+export * from "./extensions/express";
+export * from "./extensions/file";
+export * from "./extensions/string";
