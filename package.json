@@ -1,0 +1,29 @@
+{
+  "name": "xml-processor",
+  "version": "0.0.1",
+  "description": "XML processing toolkit",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "url": "https://github.com/dshadowexp/xml-processor"
+  },
+  "homepage": "https://google.com",
+  "scripts": {
+    "build": "tsup",
+    "lint": "tsc"
+  },
+  "keywords": [
+    "xml",
+    "soap",
+    "parser",
+    "express",
+    "file"
+  ],
+  "author": "Samuel Appiah-Kubi | dshadowexp",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.3"
+  }
+}
