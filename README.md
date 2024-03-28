@@ -72,19 +72,19 @@ app.listen(3000, () => {
 
 ## API
 
-### parseFromString(xmlString: string): object
+### `parseFromString(xmlString: string): XMLDocument`
 
 Parses XML data from a string and returns a JavaScript object representing the parsed data.
 
 xmlString: The XML data as a string.
 
-### parseFromFile(filePath: string): Promise<object>
+### `parseFromFile(filePath: string): Promise<XMLDocument>`
 
 Parses XML data from a file and returns a Promise that resolves to a JavaScript object representing the parsed data.
 
 filePath: The path to the XML file.
 
-### parseFromExpress(req: express.Request): Promise<object>
+### `parseFromExpress()`
 
 Parses XML data from an Express request object and returns a Promise that resolves to a JavaScript object representing the parsed data.
 
@@ -100,4 +100,4 @@ xml-processor is licensed under the MIT License. See the LICENSE file for detail
 
 ## Support
 
-For support or inquiries, please contact email@example.com.
+For support or inquiries, please contact samkofi.appiahkubi@gmail.com.
