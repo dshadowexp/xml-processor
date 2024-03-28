@@ -19,7 +19,7 @@ const xmlProcessor = require("xml-processor");
 
 const xmlString = "<root><item>Hello</item><item>World</item></root>";
 
-const parsedData = xmlProcessor.parseFromString(xmlString);
+const parsedData = xmlProcessor.parseString(xmlString);
 
 console.log(parsedData);
 // Output: { root: { item: ['Hello', 'World'] } }
@@ -33,7 +33,7 @@ const xmlProcessor = require("xml-processor");
 const filePath = "path/to/xmlFile.xml";
 
 xmlProcessor
-  .parseFromFile(filePath)
+  .parseFile(filePath)
   .then((parsedData) => {
     console.log(parsedData);
     // Process parsed XML data
@@ -51,18 +51,11 @@ const xmlProcessor = require("xml-processor");
 
 const app = express();
 
+app.use(xmlProcessor.xml());
+
 app.post("/xml", (req, res) => {
-  xmlProcessor
-    .parseFromExpress(req)
-    .then((parsedData) => {
-      console.log(parsedData);
-      // Process parsed XML data
-      res.send("XML processed successfully");
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      res.status(500).send("Error processing XML");
-    });
+  console.log(req.body);
+  res.send("XML processed successfully");
 });
 
 app.listen(3000, () => {
@@ -72,23 +65,29 @@ app.listen(3000, () => {
 
 ## API
 
-### `parseFromString(xmlString: string): XMLDocument`
+### `parseString(xmlString: string): XMLDocument`
 
 Parses XML data from a string and returns a JavaScript object representing the parsed data.
 
 xmlString: The XML data as a string.
 
-### `parseFromFile(filePath: string): Promise<XMLDocument>`
+### `parseFile(filePath: string): Promise<XMLDocument>`
 
 Parses XML data from a file and returns a Promise that resolves to a JavaScript object representing the parsed data.
 
 filePath: The path to the XML file.
 
-### `parseFromExpress()`
+### `xmlContentParser()`
 
 Parses XML data from an Express request object and returns a Promise that resolves to a JavaScript object representing the parsed data.
 
 req: The Express request object containing the XML data.
+
+## Types & Objects
+
+### XMLElement
+
+### XMLDocument
 
 ## Contributing
 

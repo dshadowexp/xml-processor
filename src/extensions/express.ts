@@ -1,36 +1,32 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, Handler } from "express";
 import XMLParser from "../core/parse";
 
-//======= Validate a File base on the extensions ============//
-//===========================================================//
 /**
  * 
- * @param req 
- * @param res 
- * @param next 
- * @returns 
+ * @returns Handler
  */
-export function express_xml(req: Request, res: Response, next: NextFunction) {
-    try {
-        if (req.headers['content-type'] !== 'application/xml') {
-            next();
-            return;
-        }
+export function xmlContentParser(): Handler {
+    return (req: Request, res: Response, next: NextFunction) => {
+        try {
+            if (req.headers['content-type'] !== 'application/xml') {
+                next();
+                return;
+            }
+    
+            const xmlParser = new XMLParser();
+            
+            xmlParser.on('done', (document) => {
+                req.body = document;
+                next();
+            });
 
-        const xmlParser = new XMLParser();
-        req.on("data", (chunk) => {
-            xmlParser.parse(chunk);
-        });
+            xmlParser.on('error', (error) => {
+                next(error);
+            });
 
-        req.on("finish", () => {
-            req.body = xmlParser.document();
-            next();
-        });
-
-        req.on("error", (error) => {
+            xmlParser.streamParse(req);
+        } catch (error) {
             next(error);
-        })
-    } catch (error) {
-        next(error);
+        }
     }
 }

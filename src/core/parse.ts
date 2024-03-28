@@ -1,10 +1,9 @@
+import EventEmitter from "events";
+import { Readable } from "stream";
 import XMLDocument from "./document";
 import XMLElement from "./element";
 
-//===========================================================//
-//========================= XMLParser =======================//
-//===========================================================//
-export default class XMLParser {
+export default class XMLParser extends EventEmitter {
     private _level: number;
     private _root: XMLElement;
     private _current: XMLElement;
@@ -12,6 +11,7 @@ export default class XMLParser {
     private _stack: XMLElement[];
 
     constructor() {
+        super();
         this._level = -1;
         this._root = this._createNewXMLNode(null);
         this._current = this._root;
@@ -104,5 +104,19 @@ export default class XMLParser {
                 this._xml_chars.push(ch);
             }
         }
+    }
+
+    public streamParse(readStream: Readable) {
+        readStream.on('data', (chunk) => {
+            this.parse(chunk);
+        });
+
+        readStream.on('finish', () => {
+            this.emit('done', this.document());
+        })
+
+        readStream.on('error', (error) => {
+            this.emit('error', error);
+        })
     }
 }
