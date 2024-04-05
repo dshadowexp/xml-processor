@@ -120,6 +120,10 @@ export default class XMLElement {
         this._type = theType;
     }
 
+    get name(): string {
+        return this._name;
+    }
+
     get content(): string | undefined {
         return this._content;
     }

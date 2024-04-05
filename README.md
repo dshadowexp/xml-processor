@@ -19,10 +19,7 @@ const xmlProcessor = require("xml-processor");
 
 const xmlString = "<root><item>Hello</item><item>World</item></root>";
 
-const parsedData = xmlProcessor.parseString(xmlString);
-
-console.log(parsedData);
-// Output: { root: { item: ['Hello', 'World'] } }
+const xmlDocument = xmlProcessor.parseXMLString(xmlString);
 ```
 
 ### Parsing XML from a File
@@ -34,8 +31,8 @@ const filePath = "path/to/xmlFile.xml";
 
 xmlProcessor
   .parseFile(filePath)
-  .then((parsedData) => {
-    console.log(parsedData);
+  .then((xmlDocument) => {
+    console.log(xmlDocument);
     // Process parsed XML data
   })
   .catch((error) => {
@@ -51,7 +48,7 @@ const xmlProcessor = require("xml-processor");
 
 const app = express();
 
-app.use(xmlProcessor.xml());
+app.use(xmlProcessor.parseXMLReq());
 
 app.post("/xml", (req, res) => {
   console.log(req.body);

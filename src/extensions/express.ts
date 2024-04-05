@@ -5,7 +5,7 @@ import XMLParser from "../core/parse";
  * 
  * @returns Handler
  */
-export function xmlContentParser(): Handler {
+export function parseXMLReq(): Handler {
     return (req: Request, res: Response, next: NextFunction) => {
         try {
             if (req.headers['content-type'] !== 'application/xml') {
@@ -14,17 +14,20 @@ export function xmlContentParser(): Handler {
             }
     
             const xmlParser = new XMLParser();
-            
-            xmlParser.on('done', (document) => {
-                req.body = document;
+
+            req.on("data", (chunk) => {
+                xmlParser.parse(chunk);
+            });
+    
+            req.on('end', () => {
+                req.body = xmlParser.document();
                 next();
             });
-
-            xmlParser.on('error', (error) => {
+    
+            req.on('error', (error) => {
                 next(error);
             });
 
-            xmlParser.streamParse(req);
         } catch (error) {
             next(error);
         }

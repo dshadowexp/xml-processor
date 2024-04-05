@@ -13,14 +13,14 @@ export default class XMLParser extends EventEmitter {
     constructor() {
         super();
         this._level = -1;
-        this._root = this._createNewXMLNode(null);
+        this._root = this._createNode(null);
         this._current = this._root;
         this._xml_chars = [];
         this._stack = [];
         this._stack.push(this._current);
     }
 
-    private _createNewXMLNode(parent: XMLElement | null) {
+    private _createNode(parent: XMLElement | null) {
         const newNode = new XMLElement('', parent);
         if (parent) parent.addChild(newNode);
         return newNode;
@@ -61,7 +61,7 @@ export default class XMLParser extends EventEmitter {
                 // Read tag content
                 const parentNode = this._stack[this._stack.length - 1];
                 const tagContent = this._xml_chars.join('').replace(/\s+/g, ' ').trim();
-
+ 
                 // If it starts with '/' => closig tag
                 if (tagContent[0] === '/') { 
                     if (!this._stack) {
@@ -78,7 +78,7 @@ export default class XMLParser extends EventEmitter {
                 } 
                 // If it ends with '/' => empty tag
                 else if (tagContent[tagContent.length - 1] === '/') {
-                    this._current = this._createNewXMLNode(parentNode);
+                    this._current = this._createNode(parentNode);
                     this._current!.tagType = "empty";
                     this._processTagContent(this._current!, tagContent.substring(0, tagContent.length - 1));
                     
@@ -86,7 +86,7 @@ export default class XMLParser extends EventEmitter {
                 }
                 // If it start with '?' => 'starting'
                 else if (tagContent[0] === '?') {
-                    this._current = this._createNewXMLNode(parentNode);
+                    this._current = this._createNode(parentNode);
                     this._current!.tagType = "empty";
                     this._processTagContent(this._current!, tagContent.substring(1, tagContent.length));
 
@@ -94,7 +94,7 @@ export default class XMLParser extends EventEmitter {
                 }
                 // If it has none => opening tag
                 else {
-                    this._current = this._createNewXMLNode(parentNode);
+                    this._current = this._createNode(parentNode);
                     this._processTagContent(this._current!, tagContent);
                     this._stack.push(this._current);
                 }
@@ -104,19 +104,5 @@ export default class XMLParser extends EventEmitter {
                 this._xml_chars.push(ch);
             }
         }
-    }
-
-    public streamParse(readStream: Readable) {
-        readStream.on('data', (chunk) => {
-            this.parse(chunk);
-        });
-
-        readStream.on('finish', () => {
-            this.emit('done', this.document());
-        })
-
-        readStream.on('error', (error) => {
-            this.emit('error', error);
-        })
     }
 }

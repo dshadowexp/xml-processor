@@ -6,12 +6,12 @@ import XMLParser from "../core/parse";
  * @param xmlString 
  * @returns 
  */
-export function parseString(xmlString: string): XMLDocument | null {
-    try {
+export function parseXMLString(xmlString: string): XMLDocument | null {
+   try {
         const xmlParser = new XMLParser();
         xmlParser.parse(xmlString);
         return xmlParser.document();
     } catch (error) {
-        return null;
+         return null;
     }
 }

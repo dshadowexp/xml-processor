@@ -19,7 +19,7 @@ function isValidFileExtenion(filePath: string, extensionList: string[]) {
  * 
  * @param filePath 
  */
-export async function parseFile(filePath: string): Promise<XMLDocument | null> {
+export async function parseXMLFile(filePath: string): Promise<XMLDocument | null> {
     try {
         // Validate the allowed extensions of the file
         if (!isValidFileExtenion(filePath, allowedExtensions)) {
@@ -28,17 +28,18 @@ export async function parseFile(filePath: string): Promise<XMLDocument | null> {
 
         const xmlParser = new XMLParser();
         const fileReadStream = createReadStream(filePath);
-
         const parsePromise = new Promise<XMLDocument>((resolve, reject) => {
-            xmlParser.on('done', (document) => {
-                resolve(document);
-            });
-
-            xmlParser.on('error', (error) => {
+            fileReadStream.on("data", (chunk) => {
+                xmlParser.parse(chunk);
+            })
+    
+            fileReadStream.on('end', () => {
+                resolve(xmlParser.document());
+            })
+    
+            fileReadStream.on('error', (error) => {
                 reject(error);
             })
-
-            xmlParser.streamParse(fileReadStream);
         });
 
         return await parsePromise;
