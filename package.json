@@ -1,6 +1,6 @@
 {
   "name": "xml-processor",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "XML processing toolkit",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -21,10 +21,8 @@
   "author": "Samuel Appiah-Kubi | dshadowexp",
   "license": "MIT",
   "devDependencies": {
-    "@changesets/cli": "^2.27.1",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.30",
-    "express": "^4.19.2",
     "tsup": "^8.0.2",
     "typescript": "^5.4.3"
   }

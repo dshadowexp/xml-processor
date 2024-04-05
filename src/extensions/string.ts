@@ -1,4 +1,4 @@
-import XMLDocument from "../core/document";
+import XMLDoc from "../core/doc";
 import XMLParser from "../core/parse";
 
 /**
@@ -6,7 +6,7 @@ import XMLParser from "../core/parse";
  * @param xmlString 
  * @returns 
  */
-export function parseXMLString(xmlString: string): XMLDocument | null {
+export function parseXMLString(xmlString: string): XMLDoc | null {
    try {
         const xmlParser = new XMLParser();
         xmlParser.parse(xmlString);

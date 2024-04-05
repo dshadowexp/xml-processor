@@ -3,7 +3,7 @@ import XMLElement from "./element";
 //===========================================================//
 //========================= XMLDoc ==========================//
 //===========================================================//
-export default class XMLDocument {
+export default class XMLDoc {
     // Reference to the root node
     private _root: XMLElement;
     // Map of unique tag names and all node occurences

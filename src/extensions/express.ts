@@ -5,7 +5,7 @@ import XMLParser from "../core/parse";
  * 
  * @returns Handler
  */
-export function parseXMLReq(): Handler {
+export function parseXMLExpress(): Handler {
     return (req: Request, res: Response, next: NextFunction) => {
         try {
             if (req.headers['content-type'] !== 'application/xml') {

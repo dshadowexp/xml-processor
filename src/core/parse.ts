@@ -1,6 +1,6 @@
 import EventEmitter from "events";
 import { Readable } from "stream";
-import XMLDocument from "./document";
+import XMLDoc from "./doc";
 import XMLElement from "./element";
 
 export default class XMLParser extends EventEmitter {
@@ -37,8 +37,8 @@ export default class XMLParser extends EventEmitter {
         }
     } 
 
-    public document(): XMLDocument {
-        return new XMLDocument(this._root);
+    public document(): XMLDoc {
+        return new XMLDoc(this._root);
     }
 
     public parse(xml: string | Buffer): void {

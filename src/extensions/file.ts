@@ -1,7 +1,7 @@
 import { extname, basename } from "node:path";
 import { createReadStream } from "node:fs";
 import { allowedExtensions } from "../types";
-import XMLDocument from "../core/document";
+import XMLDoc from "../core/doc";
 import XMLParser from "../core/parse";
 
 /**
@@ -19,7 +19,7 @@ function isValidFileExtenion(filePath: string, extensionList: string[]) {
  * 
  * @param filePath 
  */
-export async function parseXMLFile(filePath: string): Promise<XMLDocument | null> {
+export async function parseXMLFile(filePath: string): Promise<XMLDoc | null> {
     try {
         // Validate the allowed extensions of the file
         if (!isValidFileExtenion(filePath, allowedExtensions)) {
@@ -28,7 +28,7 @@ export async function parseXMLFile(filePath: string): Promise<XMLDocument | null
 
         const xmlParser = new XMLParser();
         const fileReadStream = createReadStream(filePath);
-        const parsePromise = new Promise<XMLDocument>((resolve, reject) => {
+        const parsePromise = new Promise<XMLDoc>((resolve, reject) => {
             fileReadStream.on("data", (chunk) => {
                 xmlParser.parse(chunk);
             })
