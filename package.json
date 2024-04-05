@@ -2,6 +2,7 @@
   "name": "xml-processor",
   "version": "0.0.5",
   "description": "XML processing toolkit",
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -9,7 +10,10 @@
     "url": "https://github.com/dshadowexp/xml-processor"
   },
   "scripts": {
-    "build": "tsup"
+    "test": "tsx --test $(glob '**/*.test.ts')",
+    "test:watch": "tsx --test --watch $(glob '**/*.test.ts')",
+    "build": "tsup",
+    "lint": "tsc"
   },
   "keywords": [
     "xml",
@@ -23,7 +27,9 @@
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.30",
+    "glob": "^10.3.12",
     "tsup": "^8.0.2",
+    "tsx": "^4.7.2",
     "typescript": "^5.4.3"
   }
 }

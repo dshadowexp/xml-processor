@@ -82,9 +82,67 @@ req: The Express request object containing the XML data.
 
 ## Types & Objects
 
+### XMLDoc
+
+The `XMLDoc` class represents an XML document in JavaScript or TypeScript. It provides functionality for creating, manipulating, and accessing nodes within an XML structure. This class encapsulates the root node of the XML document and allows users to interact with it by adding nodes, retrieving nodes, and accessing the root node. It serves as a convenient abstraction for working with XML data in a structured and organized manner.
+
+#### Constructor
+
+`new XMLDocument(rootNode: XMLElement)`
+Creates a new XMLDocument instance with the specified root node.
+
+- `rootNode`: The root node of the XML document.
+
+#### Methods
+
+`getNode(tagName: string, nodeIndex: number): XMLElement | null`
+Gets the node with the specified tag name and index.
+
+- `tagName`: The tag name of the node to retrieve.
+- `nodeIndex`: The index of the node within the tag name.
+
+`addNode(tagName: string, node: XMLElement): void`
+Adds a node with the specified tag name and node.
+
+- `tagName`: The tag name of the node to add.
+- `node`: The node to add.
+
+`get rootNode(): XMLElement`
+Gets the root node of the XML document.
+
 ### XMLElement
 
-### XMLDocument
+The `XMLElement` class represents an individual element or node within an XML document. It provides functionality for creating, manipulating, and accessing attributes and content of XML elements. This class encapsulates various properties and methods for working with XML elements in a structured manner. It allows users to add, update, and remove attributes, as well as add child elements to the XML structure. Additionally, it offers methods for converting XML elements to string representations in different formats.
+
+#### Constructor
+
+- `new XMLElement(name: string, parent: XMLElement | null, type?: ElementType)`: Creates a new XML element with the specified name, parent element, and optional type.
+
+#### Getters & Setters
+
+- `set name`: Setter for the name property of the XML element.
+- `set content`: Setter for the content property of the XML element.
+- `set tagType`: Setter for the type property of the XML element.
+- `get name`: string: Getter for the name property of the XML element.
+- `get content`: string | undefined: Getter for the content property of the XML element.
+- `get childNodes`: XMLElement[]: Retrieves the child XML elements.
+
+#### Methods
+
+- `getAttr(attrName: string): string | undefined`: Retrieves the value of the specified attribute.
+- `addAttr(attrName: string, attrValue: string, index?: number): void`: Adds a new attribute to the XML element.
+- `updateAttr(attrName: string, attrValue: string): void`: Updates the value of an existing attribute.
+- `removeAttr(attrName: string): void`: Removes the specified attribute.
+- `clearAttrs(): void`: Clears all attributes of the XML element.
+- `addChild(child: XMLElement, index?: number): void`: Adds a child XML element to the current element.
+- `getChild(index: number): XMLElement | undefined`: Retrieves the child XML element at the specified index.
+- `toString(type: StringFormat): string`: Converts the XML element to a string representation in the specified format.
+
+#### Usage
+
+```javascript
+
+```
 
 ## Contributing
 
