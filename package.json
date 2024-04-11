@@ -1,13 +1,13 @@
 {
   "name": "xml-processor",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "XML processing toolkit",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "repository": {
-    "url": "https://github.com/dshadowexp/xml-processor"
+    "url": "git+https://github.com/dshadowexp/xml-processor.git"
   },
   "scripts": {
     "test": "tsx --test $(glob '**/*.test.ts')",
