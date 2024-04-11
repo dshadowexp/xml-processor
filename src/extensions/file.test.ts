@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { test, describe } from 'node:test';
 
-describe('Extension: Parse File Content', () => {
+describe('Extension: File', () => {
     
 })

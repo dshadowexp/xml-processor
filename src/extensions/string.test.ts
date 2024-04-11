@@ -1,8 +1,8 @@
 import assert from 'node:assert';
 import { test, describe } from 'node:test';
-import { parseXMLString } from '../../extensions/string';
+import { parseXMLString } from './string';
 
-describe('Extension: Parse String', () => {
+describe('Extension: String', () => {
     test('successfull parsed', () => {
         const xmlString = '<parent><item>Hello</item><wild one="3"/><section>World</section></parent>';
         const xmlDocument = parseXMLString(xmlString);
