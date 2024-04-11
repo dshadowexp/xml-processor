@@ -1,3 +1,4 @@
+import { ElementType } from "../types";
 import XMLElement from "./element";
 
 //===========================================================//
@@ -9,40 +10,36 @@ export default class XMLDoc {
     // Map of unique tag names and all node occurences
     private _nodeMap: { [key: string]: XMLElement[] };
 
-    constructor(rootNode: XMLElement) {
-        this._root = rootNode;
+    constructor() {
+        this._root = new XMLElement('_root_', 'root');
         this._nodeMap = {};
-        this._populate(this._root);
     }
 
-    public getNode(tagName: string, nodeIndex: number) {
-        if (!this._nodeMap.hasOwnProperty(tagName) || nodeIndex > this._nodeMap[tagName].length - 1) {
+    public getNode(nodeName: string, nodeIndex: number) {
+        if (!this._nodeMap.hasOwnProperty(nodeName) || nodeIndex > this._nodeMap[nodeName].length - 1) {
             return null;
         }
 
-        return this._nodeMap[tagName][nodeIndex];
+        return this._nodeMap[nodeName][nodeIndex];
     }
 
-    public addNode(tagName: string, node: XMLElement) {
-        this._addToMap(tagName, node);
+    public addNode(node: XMLElement) {
+        this._addToMap(node);
+    }
+
+    public toString() {
+        return this._root.toString();
     }
 
     get rootNode() {
         return this._root;
     }
 
-    private _populate(node: XMLElement) {
-        this._addToMap(node.name, node);
-        for (const child of node.childNodes) {
-            this._populate(child);
-        }
-    }
-
-    private _addToMap(tagName: string, node: XMLElement) {
-        if (this._nodeMap.hasOwnProperty(tagName)) {
-            this._nodeMap[tagName].push(node);
+    private _addToMap(node: XMLElement) {
+        if (this._nodeMap.hasOwnProperty(node.name)) {
+            this._nodeMap[node.name].push(node);
         } else {
-            this._nodeMap[tagName] = [node];
+            this._nodeMap[node.name] = [node];
         }
     }
 }

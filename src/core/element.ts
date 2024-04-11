@@ -1,31 +1,26 @@
-import { ElementType, StringFormat } from "../types";
+import { ElementType } from "../types";
 
 //===========================================================//
 //========================= XMLElement =========================//
 //===========================================================//
 export default class XMLElement {
     private _type: ElementType;
-    private _strFormat: StringFormat;
     private _level: number;
     private _name: string;
     private _content?: string;
     private _attributes: { name: string, value: string }[];
-    private _parent: XMLElement | null;
     private _children: XMLElement[];
 
     constructor(
         name: string, 
-        parent: XMLElement | null,
-        type?: ElementType
+        type: ElementType
     ) {
-        this._type = type || 'open';
-        this._level = parent !== null ? parent._level + 1 : 0;
+        this._type = type;
+        this._level = 0;
         this._name = name;
         this._attributes = [];
-        this._parent = parent;
         this._children = [];
         this._content = '';
-        this._strFormat = '';
     }
 
     getAttr(attrName: string): string | undefined {
@@ -86,6 +81,7 @@ export default class XMLElement {
             this._children.length > 0 
             && this._children[this._children.length - 1]._name === ""
         ) {
+            console.log('called');
             this._children.pop();
         }
 
@@ -94,6 +90,7 @@ export default class XMLElement {
             return;
         }
 
+        child._level = this._type === 'root' ? 0 : this._level + 1;
         this._children.push(child);
     }
 
@@ -103,21 +100,17 @@ export default class XMLElement {
         }
     }
 
-    toString(type: StringFormat) {
-        return this._stringify(this, type);  
+    toString(): string {
+        return this._stringify(this);  
     }
 
-    set name(theName: string) {
-        this._name = theName;
+    repr(): string {
+        return `<${this._type === 'instruction' ? '?' : ''}${this._name}${this._attrStringify(this)}${this._type === 'empty' ? '/' : ''}>`
     }
 
     set content(theContent: string) {
         if (this._children.length > 0) return;
         this._content = theContent;
-    }
-
-    set tagType(theType: ElementType) {
-        this._type = theType;
     }
 
     get name(): string {
@@ -128,10 +121,6 @@ export default class XMLElement {
         return this._content;
     }
 
-    get childNodes() {
-        return this._children;
-    }
-
     private _getMatchingAttr(attrName: string) {
         const matchingAttrs = this._attributes.filter((attr) => {
             return attr.name === attrName;
@@ -140,72 +129,32 @@ export default class XMLElement {
         return matchingAttrs;
     }
 
-    private _stringify(node: XMLElement, strType: StringFormat): string {
-        if (node._type === 'root') return '';
+    private _attrStringify(node: XMLElement): string {
+        const attrStrings = node._attributes.map((attr) => `${attr.name}="${attr.value}"`);
+        return (attrStrings.length > 0 ? ' ' : '') + attrStrings.join(' ');
+    }
 
-        const attrStrings = []
-        for (let attr of node._attributes) {
-            attrStrings.push(`${attr.name}="${attr.value}"`);
-        }
-        const attrString = (attrStrings.length > 0 ? ' ' : '') + attrStrings.join(' ');
+    private _stringify(node: XMLElement): string {
+        const attrString = this._attrStringify(node);
 
-        let joiner = '';
-        let levelSpacing = '';
-        let toUse = node._strFormat || strType;
-        if (strType === 'flat') {
-            toUse = 'flat';
-        }
-
-        switch(toUse) {
-            case 'canonical':
-            case 'flat': {
-                joiner = '';
-                levelSpacing = '';
-                break;
-            } case 'hierarchy': {
-                joiner = '\n';
-                levelSpacing = ' '.repeat(node._level * 4);
-                break;
-            } case 'straight': {
-                joiner = '';
-                levelSpacing = ' '.repeat(node._level * 4);
-                break;
-            } default: {
-                break;
-            }
-        }
+        let joiner = '\n';
+        let levelSpacing = ' '.repeat((node._level) * 4);
 
         switch (node._type) {
             case 'empty': {
-                if (strType === 'canonical') {
-                    return `<${node._name}${attrString}></${node._name}>`;
-                } else if (strType === 'hierarchy') {
-                    return `${levelSpacing}<${node._name}${attrString}/>`
-                } 
-
-                return `<${node._name}${attrString}/>`;
-            } 
-            case 'open': {
+                return `${levelSpacing}<${node._name}${attrString}/>`;
+            } case 'instruction': {
+                return `${levelSpacing}<?${node._name}${attrString}/>`;
+            } case 'open': {
                 if (node._content) {
-                    if (strType === 'straight') {
-                        return `<${node._name}${attrString}>${joiner}${node._content}</${node._name}>`;
-                    }
-
                     return `${levelSpacing}<${node._name}${attrString}>${node._content}</${node._name}>`;
                 } else {
-                    const recursiveString = node._children.map(childNode => this._stringify(childNode, toUse)).join(joiner);
-                    
-                    if (node._strFormat === 'straight') {
-                        return `${levelSpacing}<${node._name}${attrString}>${joiner}${recursiveString}</${node._name}>`;
-                    }
-
-                    else if (toUse === 'straight') {
-                        return `<${node._name}${attrString}>${joiner}${recursiveString}</${node._name}>`;
-                    }
- 
+                    const recursiveString = node._children.map(childNode => this._stringify(childNode)).join(joiner);
                     return `${levelSpacing}<${node._name}${attrString}>${joiner}${recursiveString}${joiner}${levelSpacing}</${node._name}>`;
                 }
-            } 
+            } case 'root': {
+                return node._children.map(childNode => this._stringify(childNode)).join(joiner);
+            }
             default: {
                 return '';
             }

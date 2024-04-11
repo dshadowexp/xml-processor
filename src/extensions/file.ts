@@ -34,7 +34,7 @@ export async function parseXMLFile(filePath: string): Promise<XMLDoc | null> {
             })
     
             fileReadStream.on('end', () => {
-                resolve(xmlParser.document());
+                resolve(xmlParser.getDocument());
             })
     
             fileReadStream.on('error', (error) => {

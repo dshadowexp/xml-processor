@@ -1,44 +1,61 @@
-import EventEmitter from "events";
-import { Readable } from "stream";
 import XMLDoc from "./doc";
 import XMLElement from "./element";
+import { ElementType } from "../types";
 
-export default class XMLParser extends EventEmitter {
+export default class XMLParser {
     private _level: number;
-    private _root: XMLElement;
+    private _document: XMLDoc;
     private _current: XMLElement;
     private _xml_chars: string[];
     private _stack: XMLElement[];
 
     constructor() {
-        super();
         this._level = -1;
-        this._root = this._createNode(null);
-        this._current = this._root;
+        this._document = new XMLDoc();
+        this._current = this._document.rootNode;
         this._xml_chars = [];
         this._stack = [];
         this._stack.push(this._current);
     }
 
-    private _createNode(parent: XMLElement | null) {
-        const newNode = new XMLElement('', parent);
-        if (parent) parent.addChild(newNode);
-        return newNode;
+    public getDocument(): XMLDoc {
+        return this._document;
     }
 
-    private _processTagContent(node: XMLElement, content: String) {
-        const properties = content.split(' ');
-        node.name = properties[0];
-        for (let i = 1; i < properties.length; i++) {
-            if (properties[i]) {
-                const attr = properties[i].split('=');
-                node.addAttr(attr[0], attr[1].substring(1, attr[1].length - 1));
+    public processElement(elementString: string, parent: XMLElement | null, type: ElementType): XMLElement {
+        const tagContents = elementString.split(' ');
+        let elementName: string = '';
+        switch (type) {
+            case 'empty': {
+                elementName = tagContents[0].substring(0, elementString.length - 1);
+                break;
+            } case 'instruction': {
+                elementName = tagContents[0].substring(1, elementString.length);
+                break;
+            } case 'open': {
+                elementName = tagContents[0];
+                break;
+            } case 'root': {
+                elementName = elementString;
+                break;
+            } default: {
+                elementName = '';
+                break;
             }
         }
-    } 
 
-    public document(): XMLDoc {
-        return new XMLDoc(this._root);
+        const newNode = new XMLElement(elementName, type);
+        if (parent) parent.addChild(newNode);
+
+        const properties = tagContents.slice(1);
+        for (let i = 0; i < properties.length; i++) {
+            if (properties[i]) {
+                const attr = properties[i].split('=');
+                newNode.addAttr(attr[0], attr[1].substring(1, attr[1].length - 1));
+            }
+        }
+
+        return newNode;
     }
 
     public parse(xml: string | Buffer): void {
@@ -60,16 +77,16 @@ export default class XMLParser extends EventEmitter {
             } else if (ch === ">") {
                 // Read tag content
                 const parentNode = this._stack[this._stack.length - 1];
-                const tagContent = this._xml_chars.join('').replace(/\s+/g, ' ').trim();
+                const tagString = this._xml_chars.join('').replace(/\s+/g, ' ').trim();
  
-                // If it starts with '/' => closig tag
-                if (tagContent[0] === '/') { 
+                // If it starts with '/' => closing tag
+                if (tagString[0] === '/') { 
                     if (!this._stack) {
                         throw new Error('Stack is empty');
                     }
                     
                     const poppedNode = this._stack.pop()!;
-                    if (poppedNode.name !== tagContent.substring(1, tagContent.length)) {
+                    if (poppedNode.name !== tagString.substring(1, tagString.length)) {
                         throw new Error(`Unmatching open tags: ${poppedNode.name}`);
                     }
 
@@ -77,25 +94,21 @@ export default class XMLParser extends EventEmitter {
                     this._level -= 2;
                 } 
                 // If it ends with '/' => empty tag
-                else if (tagContent[tagContent.length - 1] === '/') {
-                    this._current = this._createNode(parentNode);
-                    this._current!.tagType = "empty";
-                    this._processTagContent(this._current!, tagContent.substring(0, tagContent.length - 1));
-                    
+                else if (tagString[tagString.length - 1] === '/') {
+                    this._current = this.processElement(tagString.substring(0, tagString.length - 1), parentNode, 'empty');
+                    this._document.addNode(this._current);
                     this._level--;
                 }
-                // If it start with '?' => 'starting'
-                else if (tagContent[0] === '?') {
-                    this._current = this._createNode(parentNode);
-                    this._current!.tagType = "empty";
-                    this._processTagContent(this._current!, tagContent.substring(1, tagContent.length));
-
+                // If it start with '?' => 'instructional'
+                else if (tagString[0] === '?') {
+                    this._current = this.processElement(tagString.substring(1), parentNode, 'instruction');
+                    this._document.addNode(this._current);
                     this._level--;
                 }
                 // If it has none => opening tag
                 else {
-                    this._current = this._createNode(parentNode);
-                    this._processTagContent(this._current!, tagContent);
+                    this._current = this.processElement(tagString, parentNode, 'open');
+                    this._document.addNode(this._current);
                     this._stack.push(this._current);
                 }
                 

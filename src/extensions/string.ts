@@ -10,7 +10,7 @@ export function parseXMLString(xmlString: string): XMLDoc | null {
    try {
         const xmlParser = new XMLParser();
         xmlParser.parse(xmlString);
-        return xmlParser.document();
+        return xmlParser.getDocument();
     } catch (error) {
          return null;
     }

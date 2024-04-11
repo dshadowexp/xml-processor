@@ -138,7 +138,7 @@ The `XMLElement` class represents an individual element or node within an XML do
 - `getChild(index: number): XMLElement | undefined`: Retrieves the child XML element at the specified index.
 - `toString(type: StringFormat): string`: Converts the XML element to a string representation in the specified format.
 
-#### Usage
+### Usage
 
 ```javascript
 

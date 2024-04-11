@@ -1,6 +1,6 @@
 {
   "name": "xml-processor",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "XML processing toolkit",
   "type": "module",
   "main": "dist/index.js",
@@ -15,13 +15,6 @@
     "build": "tsup",
     "lint": "tsc"
   },
-  "keywords": [
-    "xml",
-    "soap",
-    "parser",
-    "express",
-    "file"
-  ],
   "author": "Samuel Appiah-Kubi | dshadowexp",
   "license": "MIT",
   "devDependencies": {
@@ -31,5 +24,13 @@
     "tsup": "^8.0.2",
     "tsx": "^4.7.2",
     "typescript": "^5.4.3"
-  }
+  },
+  "keywords": [
+    "xml",
+    "soap",
+    "parser",
+    "express",
+    "file",
+    "xml-parse"
+  ]
 }

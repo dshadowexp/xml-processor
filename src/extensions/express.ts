@@ -20,7 +20,7 @@ export function parseXMLExpress(): Handler {
             });
     
             req.on('end', () => {
-                req.body = xmlParser.document();
+                req.body = xmlParser.getDocument();
                 next();
             });
     
